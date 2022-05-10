@@ -74,5 +74,5 @@ def cnn():
 
     # hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
 
-    model.compile(loss="mean_squared_error", optimizer=keras.optimizers.Adam(0.001), metrics=['accuracy'])
+    # model.compile(loss="mean_squared_error", optimizer=keras.optimizers.Adam(0.001), metrics=['accuracy'])
     return model

@@ -3,7 +3,7 @@ from colorama import Fore
 import cv2
 from typing import Optional
 import matplotlib.pyplot as plt
-from Filch.FilchUtils import get_train_params, get_pose, get_model
+from Filch.FilchUtils import get_train_params, get_pose, get_model, load_image
 
 
 class LupinExamin:
@@ -89,13 +89,6 @@ class LupinExamin:
 
         return selected_samples
 
-    def __load_image(self, image_path):
-        img_in = cv2.imread(image_path)
-        image_color = cv2.cvtColor(img_in, cv2.COLOR_BGR2RGB)
-        image_resize = cv2.resize(image_color, (224, 224))
-        img = np.array(image_resize).reshape(-1, 224, 224, 3)
-        return img
-
     def __predict(self, image_path: str, index: int, model):
         """
         Test the model on a single image.
@@ -104,7 +97,7 @@ class LupinExamin:
         :return: prediction keypoints, and ground truth keypoints.
         """
         img_file = image_path
-        img = self.__load_image(image_path)
+        img = load_image(image_path)
         predictions = model.predict(img).reshape(-1, 15, 2) * 224
         ground_truth = np.array(self.gt_kps[index])
         ground_truth.reshape(-1, 15, 2)
@@ -113,7 +106,11 @@ class LupinExamin:
             self.__visualize_keypoints(predictions, img_file, [ground_truth])
         return predictions, ground_truth
 
-    def __run_test(self, model):
+    def __run_test(self):
+        """
+        Run the test, and print the results.
+        :return: nothing.
+        """
         for i in range(len(self.selected_samples)):
             pred, gt = self.__predict(self.img_dir + self.selected_samples[i], i)
             self.list_of_predictions.append(pred)

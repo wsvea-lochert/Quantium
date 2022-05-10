@@ -8,7 +8,7 @@ class SiriusConverter:
     """
     Class to convert a model to a Tensorflow Lite model.
     """
-    def __init__(self, directory, output_directory):
+    def __init__(self, directory: str, output_directory: str):
         self.directory = directory
         self.output_directory = output_directory
 
