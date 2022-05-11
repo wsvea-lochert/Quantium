@@ -29,8 +29,8 @@ class DobbyTrainer:
 
         self.model.compile(loss="mean_squared_error", optimizer=keras.optimizers.Adam(0.001), metrics=['mae'])
         self.model.summary()
-        #self.model.fit(self.train_data, validation_data=self.val_data, epochs=self.epochs,
-        #               callbacks=[tensorboard_callback, early_stopping_callback, reduce_lr_callback,
-        #                          checkpoint])
+        self.model.fit(self.train_data, validation_data=self.val_data, epochs=self.epochs,
+                      callbacks=[tensorboard_callback, early_stopping_callback, reduce_lr_callback,
+                                 checkpoint])
 
         self.model.save(f'{self.save_dir}{self.model_name}')
