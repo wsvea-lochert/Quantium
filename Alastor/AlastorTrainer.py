@@ -30,10 +30,10 @@ class AlastorTrainer:
                 residual_model = residual()
                 cnn_model = cnn()
             else:
-                mobilenet_model = get_model(f'{self.checkpoint_dir}mobilenet-{split_name}/')
-                resnet_model = get_model(f'{self.checkpoint_dir}resnet-{split_name}/')
-                residual_model = get_model(f'{self.checkpoint_dir}residual-{split_name}/')
-                cnn_model = get_model(f'{self.checkpoint_dir}cnn-{split_name}/')
+                mobilenet_model = get_model(f'{self.checkpoint_dir}mobilenet-{previous_split}/')
+                resnet_model = get_model(f'{self.checkpoint_dir}resnet-{previous_split}/')
+                residual_model = get_model(f'{self.checkpoint_dir}residual-{previous_split}/')
+                cnn_model = get_model(f'{self.checkpoint_dir}cnn-{previous_split}/')
 
             print(Fore.GREEN, f"Running DobbyTrainer, MobileNet-{split}")
             dobby_mobilenet = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
@@ -47,16 +47,17 @@ class AlastorTrainer:
                                         name=f'resnet-{split_name}', model=resnet_model)
             dobby_resnet.train()
 
-            print(Fore.GREEN, f"Running DobbyTrainer, Residual-{split_name}")
+            print(Fore.GREEN, f"Running DobbyTrainer, CNN-{split_name}")
             dobby_cnn = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                      checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
                                      name=f'cnn-{split_name}', model=cnn_model)
             dobby_cnn.train()
 
-            print(Fore.GREEN, f"Running DobbyTrainer, Residual-{split_name}")
+            print(Fore.BLUE, f"Running DobbyTrainer, Residual-{split_name}")
             dobby_residual = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                           checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
                                           name=f'residual-{split_name}', model=residual_model)
             dobby_residual.train()
+            previous_split = split_name
 
         print(Fore.GREEN, "AlastorTrainer finished")
