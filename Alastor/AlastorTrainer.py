@@ -17,12 +17,14 @@ class AlastorTrainer:
         self.save_dir = save_dir
         self.log_dir = log_dir
         self.splits = os.listdir(self.json_folder)
+        self.previous_split = ''
 
     def run(self):
         print(Fore.GREEN, "Running AlastorTrainer")
         self.splits.sort()
         for split in self.splits:
-            split_name = str(os.path.splitext(split[0]))
+            split_name = os.path.splitext(split)[0]
+            print(split_name)
             print(Fore.GREEN, "Running AlastorTrainer on split:", split)
             if '1' in split_name:
                 mobilenet_model = mobilenet()
@@ -30,10 +32,10 @@ class AlastorTrainer:
                 residual_model = residual()
                 cnn_model = cnn()
             else:
-                mobilenet_model = get_model(f'{self.checkpoint_dir}mobilenet-{previous_split}/')
-                resnet_model = get_model(f'{self.checkpoint_dir}resnet-{previous_split}/')
-                residual_model = get_model(f'{self.checkpoint_dir}residual-{previous_split}/')
-                cnn_model = get_model(f'{self.checkpoint_dir}cnn-{previous_split}/')
+                mobilenet_model = get_model(f'{self.checkpoint_dir}mobilenet-{self.previous_split}/')
+                resnet_model = get_model(f'{self.checkpoint_dir}resnet-{self.previous_split}/')
+                residual_model = get_model(f'{self.checkpoint_dir}residual-{self.previous_split}/')
+                cnn_model = get_model(f'{self.checkpoint_dir}cnn-{self.previous_split}/')
 
             print(Fore.GREEN, f"Running DobbyTrainer, MobileNet-{split}")
             dobby_mobilenet = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
@@ -58,6 +60,6 @@ class AlastorTrainer:
                                           checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
                                           name=f'residual-{split_name}', model=residual_model)
             dobby_residual.train()
-            previous_split = split_name
+            self.previous_split = split_name
 
         print(Fore.GREEN, "AlastorTrainer finished")

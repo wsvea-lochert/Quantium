@@ -1,8 +1,8 @@
 import numpy as np
 from Filch.FilchUtils import get_pose
-from DobbyDataset import DobbyDataset
+from Dobby.DobbyDataset import DobbyDataset
 from Filch.FilchUtils import get_train_params
-from DobbyAugmenter import get_augmentation_parameters, get_validation_augmentation_parameters
+from Dobby.DobbyAugmenter import get_augmentation_parameters, get_validation_augmentation_parameters
 from colorama import Fore
 
 

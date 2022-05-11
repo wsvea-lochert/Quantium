@@ -1,6 +1,7 @@
 from typing import Optional
-from keras.optimizer_v1 import Adam
-from DobbyDelivery import DobbyDelivery
+# from keras.optimizer_v1 import Adam
+from tensorflow import keras
+from Dobby.DobbyDelivery import DobbyDelivery
 from keras.callbacks import TensorBoard, EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 
 
@@ -26,10 +27,10 @@ class DobbyTrainer:
         checkpoint = ModelCheckpoint(filepath=f'{self.checkpoint_dir}{self.model_name}',
                                      monitor='val_mae', verbose=1, save_best_only=True, mode='min')
 
-        self.model.compile(loss="mean_squared_error", optimizer=Adam(0.001), metrics=['mae'])
-
-        self.model.fit(self.train_data, validation_data=self.val_data, epochs=self.epochs,
-                       callbacks=[tensorboard_callback, early_stopping_callback, reduce_lr_callback,
-                                  checkpoint])
+        self.model.compile(loss="mean_squared_error", optimizer=keras.optimizers.Adam(0.001), metrics=['mae'])
+        self.model.summary()
+        #self.model.fit(self.train_data, validation_data=self.val_data, epochs=self.epochs,
+        #               callbacks=[tensorboard_callback, early_stopping_callback, reduce_lr_callback,
+        #                          checkpoint])
 
         self.model.save(f'{self.save_dir}{self.model_name}')
