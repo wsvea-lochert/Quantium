@@ -18,7 +18,7 @@ class LupinExamin:
         self.json = json
         self.img_dir = img_dir
         self.kp_def = kp_def
-        self.model_dir = model_dir
+        self.model = get_model(model_dir)
         self.samples, self.json_dict, self.kp_def, self.colors, self.labels = get_train_params(self.json, self.kp_def)
         self.images = []
         self.gt_kps = []
@@ -89,7 +89,7 @@ class LupinExamin:
 
         return selected_samples
 
-    def __predict(self, image_path: str, index: int, model):
+    def __predict(self, image_path: str, index: int):
         """
         Test the model on a single image.
         :param image_path: path to image.
@@ -98,7 +98,7 @@ class LupinExamin:
         """
         img_file = image_path
         img = load_image(image_path)
-        predictions = model.predict(img).reshape(-1, 15, 2) * 224
+        predictions = self.model.predict(img).reshape(-1, 15, 2) * 224
         ground_truth = np.array(self.gt_kps[index])
         ground_truth.reshape(-1, 15, 2)
 
@@ -106,7 +106,7 @@ class LupinExamin:
             self.__visualize_keypoints(predictions, img_file, [ground_truth])
         return predictions, ground_truth
 
-    def __run_test(self):
+    def run_test(self):
         """
         Run the test, and print the results.
         :return: nothing.
@@ -215,25 +215,25 @@ class LupinExamin:
             self.torso_distance += np.sqrt((self.torso_errors[i][0] - self.torso_gt[i][0]) ** 2 + (self.torso_errors[i][1] - self.torso_gt[i][0]) ** 2)
 
             # print("Model: ", model_name)
-            print(Fore.MAGENTA, "Average Head distance: ", self.head_distance / len(self.head_errors))
-            print(Fore.MAGENTA, "Average Neck distance: ", self.neck_distance / len(self.left_hip_errors))
+        print(Fore.MAGENTA, "Average Head distance: ", self.head_distance / len(self.head_errors))
+        print(Fore.MAGENTA, "Average Neck distance: ", self.neck_distance / len(self.left_hip_errors))
 
-            print(Fore.RED, "Average Right_shoulder distance: ", self.right_shoulder_distance / len(self.left_hip_errors))
-            print(Fore.RED, "Average Right_elbow distance: ", self.right_elbow_distance / len(self.left_hip_errors))
-            print(Fore.RED, "Average Right_wrist distance: ", self.right_wrist_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_shoulder distance: ", self.right_shoulder_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_elbow distance: ", self.right_elbow_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_wrist distance: ", self.right_wrist_distance / len(self.left_hip_errors))
 
-            print(Fore.GREEN, "Average Left_shoulder distance: ", self.left_shoulder_distance / len(self.left_hip_errors))
-            print(Fore.GREEN, "Average Left_elbow distance: ", self.left_elbow_distance / len(self.left_ankle_errors))
-            print(Fore.GREEN, "Average Left_wrist distance: ", self.left_wrist_distance / len(self.left_hip_errors))
+        print(Fore.GREEN, "Average Left_shoulder distance: ", self.left_shoulder_distance / len(self.left_hip_errors))
+        print(Fore.GREEN, "Average Left_elbow distance: ", self.left_elbow_distance / len(self.left_ankle_errors))
+        print(Fore.GREEN, "Average Left_wrist distance: ", self.left_wrist_distance / len(self.left_hip_errors))
 
-            print(Fore.MAGENTA, "Average Torso distance: ", self.torso_distance / len(self.left_hip_errors))
-            print(Fore.RED, "Average Right_hip distance: ", self.right_hip_distance / len(self.left_hip_errors))
-            print(Fore.RED, "Average Right_knee distance: ", self.right_knee_distance / len(self.left_hip_errors))
-            print(Fore.RED, "Average Right_ankle distance: ", self.right_ankle_distance / len(self.left_hip_errors))
+        print(Fore.MAGENTA, "Average Torso distance: ", self.torso_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_hip distance: ", self.right_hip_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_knee distance: ", self.right_knee_distance / len(self.left_hip_errors))
+        print(Fore.RED, "Average Right_ankle distance: ", self.right_ankle_distance / len(self.left_hip_errors))
 
-            print(Fore.GREEN, "Average Left_hip distance: ", self.left_hip_distance / len(self.left_hip_errors))
-            print(Fore.GREEN, "Average Left_knee distance: ", self.left_knee_distance / len(self.left_hip_errors))
-            print(Fore.GREEN, "Average Left_Ankle distance: ", self.left_ankle_distance / len(self.left_ankle_errors))
+        print(Fore.GREEN, "Average Left_hip distance: ", self.left_hip_distance / len(self.left_hip_errors))
+        print(Fore.GREEN, "Average Left_knee distance: ", self.left_knee_distance / len(self.left_hip_errors))
+        print(Fore.GREEN, "Average Left_Ankle distance: ", self.left_ankle_distance / len(self.left_ankle_errors))
 
     def __visualize_keypoints(self, keypoints, image_file: str, gt_keypoints, rot: Optional[bool] = False):
         """
