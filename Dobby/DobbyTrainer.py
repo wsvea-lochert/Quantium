@@ -56,9 +56,8 @@ class CustomLRCallback(keras.callbacks.Callback):
         # open a file and check if the learning rate is the same as the one in the file
         with open(f"{self.model_name}-lr.txt", "r") as f:
             learning_rate = f.read()
-        if float(learning_rate) != self.old_lr:
             # if not, set the learning rate to the one in the file
-            self.model.optimizer.learning_rate = float(learning_rate)
-            print(f"Epoch {epoch}: Learning rate changed to {self.model.optimizer.learning_rate} from file.")
+        self.model.optimizer.learning_rate = float(learning_rate)
+        print(f"Epoch {epoch}: Learning rate changed to {self.model.optimizer.learning_rate} from file.")
 
 
