@@ -18,6 +18,7 @@ class AlastorTrainer:
         self.log_dir = log_dir
         self.splits = os.listdir(self.json_folder)
         self.previous_split = ''
+        self.compile_status = True
 
     def run(self):
         print(Fore.GREEN, "Running AlastorTrainer")
@@ -36,29 +37,30 @@ class AlastorTrainer:
                 resnet_model = get_model(f'{self.checkpoint_dir}resnet-{self.previous_split}/')
                 residual_model = get_model(f'{self.checkpoint_dir}residual-{self.previous_split}/')
                 cnn_model = get_model(f'{self.checkpoint_dir}cnn-{self.previous_split}/')
+                self.compile_status = False
 
             print(Fore.GREEN, f"Running DobbyTrainer, MobileNet-{split}")
             dobby_mobilenet = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                            checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
-                                           name=f'mobilenet-{split_name}', model=mobilenet_model)
+                                           name=f'mobilenet-{split_name}', model=mobilenet_model, compiler=self.compile_status)
             dobby_mobilenet.train()
 
             print(Fore.GREEN, f"Running DobbyTrainer, ResNet-{split_name}")
             dobby_resnet = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                         checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
-                                        name=f'resnet-{split_name}', model=resnet_model)
+                                        name=f'resnet-{split_name}', model=resnet_model, compiler=self.compile_status)
             dobby_resnet.train()
 
             print(Fore.GREEN, f"Running DobbyTrainer, CNN-{split_name}")
             dobby_cnn = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                      checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
-                                     name=f'cnn-{split_name}', model=cnn_model)
+                                     name=f'cnn-{split_name}', model=cnn_model, compiler=self.compile_status)
             dobby_cnn.train()
 
             print(Fore.BLUE, f"Running DobbyTrainer, Residual-{split_name}")
             dobby_residual = DobbyTrainer(json=f'{self.json_folder}{split}', kp_def=self.kp_def, images=self.image_folder,
                                           checkpoint_dir=self.checkpoint_dir, log_dir=self.log_dir, save_dir=self.save_dir,
-                                          name=f'residual-{split_name}', model=residual_model)
+                                          name=f'residual-{split_name}', model=residual_model, compiler=self.compile_status)
             dobby_residual.train()
             self.previous_split = split_name
 
