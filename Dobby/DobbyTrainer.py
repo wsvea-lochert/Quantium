@@ -47,9 +47,8 @@ class CustomLRCallback(keras.callbacks.Callback):
     """Custom callback for learning rate scheduler.
     """
 
-    def __init__(self, old_lr, model_name):
+    def __init__(self, model_name):
         super(CustomLRCallback, self).__init__()
-        self.old_lr = old_lr
         self.model_name = model_name
 
     def on_epoch_begin(self, epoch, logs=None):
